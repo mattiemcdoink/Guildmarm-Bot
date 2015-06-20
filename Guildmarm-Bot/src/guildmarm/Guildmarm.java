@@ -361,22 +361,10 @@ public class Guildmarm extends PircBot {
 						target = target + "-" + command[i].toLowerCase().replace(":", "").replace("'", "");
 					}
 				}
-
-				if ( command[0].equalsIgnoreCase("!weapon") || ( command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("weapon")) ) {
-					for ( int i = 0; i < weapons.length; i++ ) {
-						URLString = weapons[i] + target;
-						u = new URL(URLString);
-						huc = (HttpURLConnection)u.openConnection();
-						huc.setRequestMethod("HEAD");
-						huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
-						huc.connect();
-						System.out.println("Trying " + URLString + " Method " + huc.getRequestMethod() + " Got " + huc.getResponseCode() + " Needed " + HttpURLConnection.HTTP_OK);
-						if ( huc.getResponseCode() == HttpURLConnection.HTTP_OK ) {
-							sendMessage(sender, "Here you go Doodle. " + URLString);
-						}
-					}
-				} else if ( command[0].equalsIgnoreCase("!monster") || ( command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("monster") ) ) {
-					URLString = monster + target;
+			}
+			if ( command[0].equalsIgnoreCase("!weapon") || ( command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("weapon")) ) {
+				for ( int i = 0; i < weapons.length; i++ ) {
+					URLString = weapons[i] + target;
 					u = new URL(URLString);
 					huc = (HttpURLConnection)u.openConnection();
 					huc.setRequestMethod("HEAD");
@@ -384,36 +372,34 @@ public class Guildmarm extends PircBot {
 					huc.connect();
 					System.out.println("Trying " + URLString + " Method " + huc.getRequestMethod() + " Got " + huc.getResponseCode() + " Needed " + HttpURLConnection.HTTP_OK);
 					if ( huc.getResponseCode() == HttpURLConnection.HTTP_OK ) {
-						sendMessage(sender, "Here you go Doodle. " + URLString);
+						sendNotice(sender, "Here you go Doodle. " + URLString);
 					}
-				} else if ( command[0].equalsIgnoreCase("!quest") || ( command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("quest") ) ) {
-					for ( int i = 0; i < 3; i++ ) {
-						for ( int j = 1; j <= 10; j++ ) {
-							switch (i) {
-							case(0):
-								URLString = caravan + j + "/" + target;
-								break;
-							case(1):
-								URLString = guild + j + "/" + target;
-								break;
-							case(2):
-								URLString = event + j + "/" + target;
-								break;
-							}
-							u = new URL(URLString);
-							huc = (HttpURLConnection)u.openConnection();
-							huc.setRequestMethod("HEAD");
-							huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
-							huc.connect();
-							System.out.println("Trying " + URLString + " Method " + huc.getRequestMethod() + " Got " + huc.getResponseCode() + " Needed " + HttpURLConnection.HTTP_OK);
-							if ( huc.getResponseCode() == HttpURLConnection.HTTP_OK ) {
-								sendMessage(sender, "Here you go Doodle. " + URLString);
-							}
+				}
+			} else if ( command[0].equalsIgnoreCase("!monster") || ( command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("monster") ) ) {
+				URLString = monster + target;
+				u = new URL(URLString);
+				huc = (HttpURLConnection)u.openConnection();
+				huc.setRequestMethod("HEAD");
+				huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
+				huc.connect();
+				System.out.println("Trying " + URLString + " Method " + huc.getRequestMethod() + " Got " + huc.getResponseCode() + " Needed " + HttpURLConnection.HTTP_OK);
+				if ( huc.getResponseCode() == HttpURLConnection.HTTP_OK ) {
+					sendNotice(sender, "Here you go Doodle. " + URLString);
+				}
+			} else if ( command[0].equalsIgnoreCase("!quest") || ( command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("quest") ) ) {
+				for ( int i = 0; i < 3; i++ ) {
+					for ( int j = 1; j <= 10; j++ ) {
+						switch (i) {
+						case(0):
+							URLString = caravan + j + "/" + target;
+						break;
+						case(1):
+							URLString = guild + j + "/" + target;
+						break;
+						case(2):
+							URLString = event + j + "/" + target;
+						break;
 						}
-					}
-				} else if ( command[0].equalsIgnoreCase("!armor") || command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("armor") ) {
-					for ( int i = 0; i < armor.length; i++ ) {
-						URLString = armor[i] + target;
 						u = new URL(URLString);
 						huc = (HttpURLConnection)u.openConnection();
 						huc.setRequestMethod("HEAD");
@@ -421,12 +407,37 @@ public class Guildmarm extends PircBot {
 						huc.connect();
 						System.out.println("Trying " + URLString + " Method " + huc.getRequestMethod() + " Got " + huc.getResponseCode() + " Needed " + HttpURLConnection.HTTP_OK);
 						if ( huc.getResponseCode() == HttpURLConnection.HTTP_OK ) {
-							sendMessage(sender, "Here you go Doodle. " + URLString);
+							sendNotice(sender, "Here you go Doodle. " + URLString);
 						}
 					}
 				}
+			} else if ( command[0].equalsIgnoreCase("!armor") || ( command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("armor") ) ) {
+				for ( int i = 0; i < armor.length; i++ ) {
+					URLString = armor[i] + target;
+					u = new URL(URLString);
+					huc = (HttpURLConnection)u.openConnection();
+					huc.setRequestMethod("HEAD");
+					huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
+					huc.connect();
+					System.out.println("Trying " + URLString + " Method " + huc.getRequestMethod() + " Got " + huc.getResponseCode() + " Needed " + HttpURLConnection.HTTP_OK);
+					if ( huc.getResponseCode() == HttpURLConnection.HTTP_OK ) {
+						sendNotice(sender, "Here you go Doodle. " + URLString);
+					}
+				}
+			} else if ( command[0].equalsIgnoreCase("!skill") || ( command[0].equalsIgnoreCase("!link") && option.equalsIgnoreCase("skill") ) ) {
+				URLString = skill + target;
+				u = new URL(URLString);
+				huc = (HttpURLConnection)u.openConnection();
+				huc.setRequestMethod("HEAD");
+				huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
+				huc.connect();
+				System.out.println("Trying " + URLString + " Method " + huc.getRequestMethod() + " Got " + huc.getResponseCode() + " Needed " + HttpURLConnection.HTTP_OK);
+				if ( huc.getResponseCode() == HttpURLConnection.HTTP_OK ) {
+					sendNotice(sender, "Here you go Doodle. " + URLString);
+				}
 			}
 		}
+
 	}
 
 	public void commandRoom(String sender, String arg, String channel) {
@@ -475,13 +486,13 @@ public class Guildmarm extends PircBot {
 				}
 				for (int i = 0; i < this.numRooms; i++) {
 					if ( this.roomList[i].getOwner().equalsIgnoreCase(sender) ) {
-						sendMessage(sender, "Found your room Doodle. I'll update it for you.");
+						sendNotice(sender, "Found your room Doodle. I'll update it for you.");
 						roomList[i].update(field, toUpdate);
 					}
 				}
 			} else if ( option.equalsIgnoreCase("list")) {
 				if ( numRooms.equals(0) ) {
-					sendMessage(sender, "Doesn't look like there are any rooms open right now Doodle. Sorry.");
+					sendNotice(sender, "Doesn't look like there are any rooms open right now Doodle. Sorry.");
 				} else {
 					sendMessage(sender, "Here are those rooms you asked for Doodle.");
 				}
@@ -508,7 +519,7 @@ public class Guildmarm extends PircBot {
 				leaveRoom(sender, channel);
 			} else if ( option.equalsIgnoreCase("")) {
 				String roomSuffix = (numRooms>1)?"s":"";
-				sendMessage(this.channel, "There's currently " + numRooms + " room" + roomSuffix + " currently running, Doodle.");
+				sendMessage(this.channel, "There's " + numRooms + " room" + roomSuffix + " currently running, Doodle.");
 			}
 		} else {
 			sendMessage(sender, "There seems to have been a problem with your ID or Key Doodle, check them and try again would you please?");
@@ -516,7 +527,6 @@ public class Guildmarm extends PircBot {
 	}
 
 	public void commandHelp(String sender, String arg) {
-		this.sendMessage(sender, "Need some help Doodle?");
 		String[] command = arg.split(" ");
 		Integer size = command.length; //use this later to add cases for arguments to commands
 		if (command[0].equalsIgnoreCase("monster") || command[0].equalsIgnoreCase("!monster")) {
