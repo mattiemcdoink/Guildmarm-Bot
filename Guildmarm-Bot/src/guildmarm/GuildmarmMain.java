@@ -9,7 +9,7 @@ public class GuildmarmMain {
         
         bot.setVerbose(true);
         bot.connect("irc.freenode.net");
-        bot.identify("J7HHJYf_D652a%DP");
+        bot.identify("");
         bot.joinChannel(channel);
     }
 }

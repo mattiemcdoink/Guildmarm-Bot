@@ -25,26 +25,65 @@ public class Guildmarm extends PircBot {
     String sgunstick = "http://kiranico.com/en/mh4u/weapon/lightbowgun/";
     String lgunstick = "http://kiranico.com/en/mh4u/weapon/heavybowgun/";
     String stringystick = "http://kiranico.com/en/mh4u/weapon/bow/";
-    String[] monsterList = {"seltas", "desert seltas", "seltas queen", "desert seltas queen", "nerscylla", "shrouded nerscylla",  "cephadrome", "great jaggi", "velocidrome", "gendrome", "iodrome", "yian kut-ku", "blue yian kut-ku", "gypceros", "purple gypceros", "yian garuga", "daimyo hermitaur", "plum d.hermitaur", "kecha wacha", "ash kecha wacha", "lagombi", "congalala", "emerald congalala", "rajang", "apex rajang", "furious rajang", "tetsucabra", "berserk tetsucabra", "zamtrios", "tigerstripe zamtrios", "najarala", "tidal najarala", "apex tidal najarala", "brachydios", "raging brachydios", "deviljho", "apex deviljho", "savage deviljho", "khezu", "red khezu", "basarios", "ruby basarios", "gravios", "apex gravios", "black gravios", "rathian", "pink rathian", "gold rathian", "rathalos", "azure rathalos", "silver rathalos", "tigrex", "apex tigrex", "brute tigrex", "molten tigrex",  "diablos", "apex diablos", "black diablos", "monoblos", "white monoblos", "seregios", "apex seregios", "gore magala", "chaotic gore magala", "akantor", "ukanlos", "zinogre", "apex zinogre", "stygian zinogre", "kirin", "oroshi kirin", "shagaru magala", "dah'ren mohran", "kushala daora", "rusted kushala daora", "teostra", "chameleos", "dalamadur", "shah dalamadur", "gogmazios", "fatalis", "crimson fatalis", "white fatalis", "felyne", "melynx", "altaroth", "konchu", "bnahabra", "delex", "cephalos", "kelbi", "aptonoth", "rhenoplos", "slagtoth", "popo", "apceros", "gargwa", "jaggi", "jaggia", "velociprey", "genprey", "ioprey", "hermitaur", "conga", "zamite", "remobra" };
-    room[] roomList = new room[100];
+    String[] monsterList = {"seltas", "desert seltas", "seltas queen", "desert seltas queen", "nerscylla", 
+    		"shrouded nerscylla",  "cephadrome", "great jaggi", "velocidrome", "gendrome", "iodrome", "yian kut-ku", 
+    		"blue yian kut-ku", "gypceros", "purple gypceros", "yian garuga", "daimyo hermitaur", "plum d.hermitaur", 
+    		"kecha wacha", "ash kecha wacha", "lagombi", "congalala", "emerald congalala", "rajang", "apex rajang", 
+    		"furious rajang", "tetsucabra", "berserk tetsucabra", "zamtrios", "tigerstripe zamtrios", "najarala", 
+    		"tidal najarala", "apex tidal najarala", "brachydios", "raging brachydios", "deviljho", "apex deviljho", 
+    		"savage deviljho", "khezu", "red khezu", "basarios", "ruby basarios", "gravios", "apex gravios", "black gravios", 
+    		"rathian", "pink rathian", "gold rathian", "rathalos", "azure rathalos", "silver rathalos", "tigrex", "apex tigrex", 
+    		"brute tigrex", "molten tigrex",  "diablos", "apex diablos", "black diablos", "monoblos", "white monoblos", 
+    		"seregios", "apex seregios", "gore magala", "chaotic gore magala", "akantor", "ukanlos", "zinogre", "apex zinogre", 
+    		"stygian zinogre", "kirin", "oroshi kirin", "shagaru magala", "dah'ren mohran", "kushala daora", "rusted kushala daora", 
+    		"teostra", "chameleos", "dalamadur", "shah dalamadur", "gogmazios", "fatalis", "crimson fatalis", "white fatalis", 
+    		"felyne", "melynx", "altaroth", "konchu", "bnahabra", "delex", "cephalos", "kelbi", "aptonoth", "rhenoplos", 
+    		"slagtoth", "popo", "apceros", "gargwa", "jaggi", "jaggia", "velociprey", "genprey", "ioprey", "hermitaur", "conga", "zamite", "remobra" };
+    Integer roomCap = 20;
     Integer numRooms = 0;
+    Room[] roomList = new Room[roomCap];
 
-    private class room {
+    private class Room {
         String id = "";
         String key = "";
         String owner = "";
         String comment = "";
         String time = "";
+        String subChannel = "";
+        Integer roomNumber = 0;
+        boolean active = false;
         Date timeStamp = null;      
         
-        private void update(String owner, String comment) {
+        private void update(String option, String toUpdate) {
             String[] tmp;
-            this.comment = comment;
+            String testKey = "0000";
+            String testID = "00-0000-0000-0000";
+            boolean valid;
             this.timeStamp = new java.util.Date(); 
             tmp = timeStamp.toString().split(" ");
             this.time = tmp[0] + " " + tmp[3];
+            if ( option.equalsIgnoreCase("owner") ) {
+            	if ( Arrays.asList(getUsers(this.subChannel)).contains(toUpdate) ) {
+            		this.setOwner(toUpdate);
+            	}
+            } else if ( option.equalsIgnoreCase("id") ) {
+            	valid = validateInput(toUpdate, testKey, this.getOwner());
+            	if ( valid ) {
+            		this.setID(toUpdate);
+            	}
+            } else if ( option.equalsIgnoreCase("key") ) {
+            	valid = validateInput(testID, toUpdate, this.getOwner());
+            	if ( valid ) {
+            		this.setKey(toUpdate);
+            	}
+            } else if ( option.equalsIgnoreCase("comment") ) {
+            	this.setComment(toUpdate);
+            }
         }
-            
+        
+        public boolean isActive() {
+        	return this.active;
+        }
         public String getOwner() {
             return this.owner;
         }
@@ -63,6 +102,9 @@ public class Guildmarm extends PircBot {
         public String getComment() {
             return this.comment;
         }
+        public void setComment(String newComment) {
+        	this.comment = newComment;
+        }
         public void setID(String newID) {
             this.id = newID;
         }
@@ -74,28 +116,69 @@ public class Guildmarm extends PircBot {
             return this.time;
         }
 
-        public room(String id, String key, String owner, String comment) {
-            this.id = id;
-            this.key = key;
-            this.owner = owner;
-            this.comment = comment;
-            this.update(owner, comment); 
+        public void setChannel(String string) {
+        	this.subChannel = string;			
+		}
+        public String getChannel() {
+        	return this.subChannel;
+        }
+		public Integer getRoomNumber() {
+			return this.roomNumber;
+		}
+		public void setRoomNumber(Integer num) {
+			this.roomNumber = num;
+		}
+		
+		public void createRoom(String newID, String newKey, String newOwner, String newComment) {
+			this.setID(newID);
+			this.setKey(newKey);
+			this.setComment(newComment);
+			this.setOwner(newOwner);
+			this.active = true;
+			this.update("", "");
+		}
+		
+		public void removeRoom() {
+			this.setID("");
+        	this.setKey("");
+        	this.setOwner("");
+        	this.setComment("");
+        	this.timeStamp = null;
+        	this.active = false;
+		}
+		
+		
+        public Room() {
+        	this.setID("");
+        	this.setKey("");
+        	this.setOwner("");
+        	this.setComment("");
+        	this.timeStamp = null;
+        	this.active = false;
         }
     }
 
     public Guildmarm(String channel) {
+    	String chanNum = "";
     	this.channel = channel;
         this.setName("Guildmarm");
-        this.setLogin("Guildmarm");
+        this.setLogin("GuildmarmBot");
+        for ( int i = 0; i < roomCap; i++ ) {
+        	chanNum = i < 10?"0":"";
+        	roomList[i] = new Room();
+        	roomList[i].setRoomNumber(i);
+        	roomList[i].setChannel( "##mhroom" + chanNum + roomList[i].getRoomNumber().toString() );
+        	System.out.println( "Rooom " + (roomList[i].getRoomNumber()+1) + " initialized. Sub-Channel: " + roomList[i].getChannel() );
+        }
     }
     
     public void onPrivateMessage(String sender, String login, String hostname, String message) {
-        handleCommand(sender, message);
+        handleCommand("", sender, message);
         checkRooms(new java.util.Date());
     }
 
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
-        handleCommand(sender, message);
+        handleCommand(channel, sender, message);
         checkRooms(new java.util.Date());
         //updateSeen(sender);
     }
@@ -103,7 +186,7 @@ public class Guildmarm extends PircBot {
     private void checkRooms(Date date) {
 		long curTime = date.getTime();
 		for (int i = 0; i < numRooms; i++) {
-			if ( roomList[i].timeStamp.getTime() < curTime - this.timeout ) {
+			if ( roomList[i].getTimeNum() < curTime - this.timeout ) {
 				// Remove any rooms that have a timestamp longer than 1 hour (curTime - timeout) ago
 				closeRoom(i);
 			}
@@ -111,28 +194,47 @@ public class Guildmarm extends PircBot {
 		
 	}
 
-    private void openRoom(boolean hasRoom, int tmp, String id, String key, String sender, String comment) {
+    private Room findRoom(String owner) {
+    	Room target = null;
+    	boolean foundOwnedRoom, foundFreeRoom;
+    	foundOwnedRoom = foundFreeRoom = false;
+    	for ( int i = 0; i < roomCap; i++ ) {
+    		if ( roomList[i].isActive() && roomList[i].getOwner().equalsIgnoreCase(owner) && !foundOwnedRoom ) {
+    			target = roomList[i];
+    			foundOwnedRoom = true;
+    		} else if ( !roomList[i].isActive() && !foundFreeRoom && !foundOwnedRoom ) {
+    			target = roomList[i];
+    			foundFreeRoom = true;
+    		}
+    	}
+    	if ( foundOwnedRoom ) {
+    		sendMessage(owner, "Alright, I found your room Doodle.");
+    	} else if ( foundFreeRoom ) {
+    		sendMessage(owner, "Looks like you didn't have a room already Doodle. So I found you an open one");
+    	} else {
+    		sendMessage(owner, "Well Doodle, this is something that shouldn't have happened. Could you please Yell at Tonberry to fix findRoom() for me please?");
+    	}
+    	return target;
+    }
+    
+    private void openRoom(int index, String id, String key, String sender, String comment) {
 		// TODO Auto-generated method stub
-    	if (!hasRoom) {
-            roomList[numRooms] = new room(id, key, sender, comment);
-        } else {
-            roomList[tmp] = new room(id, key, sender, comment);
-        }
+    	roomList[index].createRoom(id, key, sender, comment);
+    	joinChannel(roomList[index].getChannel());
+    	setTopic( roomList[index].getChannel(), "Room " + (roomList[index].getRoomNumber()+1) + ": Owner: " + roomList[index].getOwner() + " ID: " 
+    			+ roomList[index].getID() + " Key: " + roomList[index].getKey() + " " + roomList[index].getComment() );
+    	sendInvite( roomList[index].getOwner(), roomList[index].getChannel() );
     	numRooms++;
 	}
     
-	private void closeRoom(int i) {
-		for (int j = i; j < numRooms; j++) {
-			if (j == this.numRooms-1) {
-				roomList[j] = null;
-			} else {
-				roomList[j] = roomList[j+1];
-			}
-		}
+	private void closeRoom(int index) {
+		roomList[index].removeRoom();
+		sendMessage( "ChanServ", "CLEAR " + roomList[index].getChannel() + " users ROOM CLOSING" );
+		setTopic( roomList[index].getChannel(), "Room " + (roomList[index].getRoomNumber()+1) );
 		numRooms--;
 	}
 
-	public void handleCommand(String sender, String message) {
+	public void handleCommand(String channel, String sender, String message) {
         String[] command = message.split(" ");
         int size = command.length;
         String arg = "";
@@ -166,16 +268,19 @@ public class Guildmarm extends PircBot {
     public void commandRoom(String sender, String arg) {
         //maintains active room lists of the format
         //Owner ID Password Target Last Updated
+    	Room target = null;
         String[] command = arg.split(" ");
-        String comment = "";
+        String toUpdate = "";
+        String field = "";
+        String option = "";
         String id = "";
         String key = "";
         Integer size = command.length;
-        int tmp = 0;
+        int index = 0;
         boolean hasRoom = false;
         boolean valid = false;
         if ( size > 0 ) {
-            String option = command[0];
+            option = command[0];
             if (option.equalsIgnoreCase("create")) {
                 if (size >= 2) {
                     id = command[1];
@@ -183,37 +288,34 @@ public class Guildmarm extends PircBot {
                         key = command[2];
                         valid = validateInput(id, key, sender);
                         if (size >=4) {
-                            comment = command[3];
+                            toUpdate = command[3];
                             for (int i = 4; i < size; i++) {
-                                comment = comment + " " + command[i];
+                                toUpdate = toUpdate + " " + command[i];
                             }
                         }
                     }
                 }
-                for (int i = 0; i < this.numRooms; i++) {
-                    if ( this.roomList[i].getOwner().equalsIgnoreCase(sender) )  {
-                        hasRoom = true;
-                        tmp = i;
-                        i = this.numRooms;
-                    }
+                target = findRoom(sender);
+                if ( target != null ) {
+                	
                 }
                 if (valid) {
-                    this.sendMessage(sender, "Creating a new room for you Doodle!");
-                    openRoom(hasRoom, tmp, id, key, sender, comment);
+                    openRoom(index, id, key, sender, toUpdate);
                 } 
                 
 
             } else if ( option.equalsIgnoreCase("update")) {
-                if ( size >=2 ) {
-                    comment = command[1];
-                    for (int i = 2; i < size; i++) {
-                        comment = comment + " " + command[i];
+                if ( size >=3 ) {
+                	field = command[1];
+                    toUpdate = command[2];
+                    for (int i = 3; i < size; i++) {
+                        toUpdate = toUpdate + " " + command[i];
                     }
                 }
                 for (int i = 0; i < this.numRooms; i++) {
                     if ( this.roomList[i].getOwner().equalsIgnoreCase(sender) ) {
                         sendMessage(sender, "Found your room Doodle. I'll update it for you.");
-                        roomList[i].update(sender, comment);
+                        roomList[i].update(sender, toUpdate);
                     }
                 }
             } else if ( option.equalsIgnoreCase("list")) {
@@ -222,20 +324,22 @@ public class Guildmarm extends PircBot {
                 } else {
                     sendMessage(sender, "Here are those rooms you asked for Doodle.");
                 }
-                for (int i = 0; i < numRooms; i++) {
-                    sendMessage(sender, getRoom(i));
+                for (int i = 0; i < roomCap; i++) {
+                    if ( roomList[i].isActive() ) {
+                		sendMessage(sender, getRoom(i));
+                    }
                 }
             } else if ( option.equalsIgnoreCase("close") ) { 
                 for (int i = 0; i < numRooms; i++) {
                     if ( roomList[i].getOwner().equalsIgnoreCase(sender) )  {
                         hasRoom = true;
-                        tmp = i;
+                        index = i;
                         i = numRooms;
                     }
                 }
                 if ( hasRoom ) {
                     sendMessage(sender, "All done hunting now Doodle? See you next time!");
-                    closeRoom(tmp);
+                    closeRoom(index);
                 }
             } else if ( option.equalsIgnoreCase("")) {
             	sendMessage(channel, "There are currently " + numRooms + " currently running Doodle.");
@@ -309,12 +413,10 @@ public class Guildmarm extends PircBot {
         return true;
     }
     public String getRoom(Integer index) {
-        String room = "";
-        room = roomList[index].getOwner();
-        room = room + " " + roomList[index].getID();
-        room = room + " " + roomList[index].getKey();
-        room = room + " " + roomList[index].getTimeStr();
-        room = room + " " + roomList[index].getComment();
+//    	String status = roomList[index].isActive()?"Active":"Closed";
+//      String room = "Room " + (roomList[index].getRoomNumber()+1) + ": Status: " + status + " ";
+    	String room = "Room " + (roomList[index].getRoomNumber()+1) + " ";
+        room = room + roomList[index].getOwner() + " " + roomList[index].getTimeStr() + " " + roomList[index].getComment();
         return room;
     }
 
