@@ -318,7 +318,11 @@ public class Guildmarm extends PircBot {
 		}
 		if (Arrays.asList(link).contains(command[0])) {        
 			try {
-				commandLink(sender, command);
+				if ( command[0].equalsIgnoreCase("!link") ) {
+					commandLink(command[1], command);
+				} else {
+					commandLink(sender, command);
+				}
 			} catch ( IOException e ) {
 				System.out.println("Encountered Error");
 			}
@@ -353,11 +357,11 @@ public class Guildmarm extends PircBot {
 					target = target + "-" + command[i].toLowerCase().replace(":", "").replace("'", "");
 				}
 			} 
-			if ( command.length > 2 ) {
-				if ( command[0].equalsIgnoreCase("!link") && Arrays.asList(listOption).contains(command[1]) ) {
-					option = command[1];
-					target = command[2].toLowerCase().replace(":", "").replace("'", "");
-					for ( int i = 3; i < command.length; i++ ) {
+			if ( command.length > 3 ) {
+				if ( command[0].equalsIgnoreCase("!link") && Arrays.asList(listOption).contains(command[2]) ) {
+					option = command[2];
+					target = command[3].toLowerCase().replace(":", "").replace("'", "");
+					for ( int i = 4; i < command.length; i++ ) {
 						target = target + "-" + command[i].toLowerCase().replace(":", "").replace("'", "");
 					}
 				}
@@ -528,19 +532,45 @@ public class Guildmarm extends PircBot {
 
 	public void commandHelp(String sender, String arg) {
 		String[] command = arg.split(" ");
+		String[] links = { "!monster", "!weapon", "!armor", "!quest", "!skill", "monster", "weapon", "armor", "quest", "skill" };
 		Integer size = command.length; //use this later to add cases for arguments to commands
-		if (command[0].equalsIgnoreCase("monster") || command[0].equalsIgnoreCase("!monster")) {
-			sendMessage(sender, "Syntax: !monster name Example: !monster Apex Rajang. Just tell me the name of a monster and I'll find it here in my notebook.");
-		} else if (command[0].equalsIgnoreCase("link") || command[0].equalsIgnoreCase("!link")) {
-			sendMessage(sender, "I have these resources available to link. Just say the name of the resource after !link and I'll get it for you.");
-			sendMessage(sender, "relicskins - Relic Skin Spreadsheet, bmrelics - Blademaster relic stats chart, charms - Charm stats and skill chart");
-		} else if (command[0].equalsIgnoreCase("room") || command[0].equalsIgnoreCase("!room")) {
-			sendMessage(sender, "!room list will list currently open rooms created with \"!room create\". Options are create, update, close. Rooms are associated with the nick of the person who created them.");
-			sendMessage(sender, "create - Syntax: !room create id password comment. Creates a room with the provided information which can then be retrieved with !room. Comments can be anything like what you're fighting, whether the room is High Rank, G-Rank, turns, anything.");
-			sendMessage(sender, "update - Syntax: !room update comment. Updates the last active time of the room. Rooms that have had no updates issued for over an hour will be automatically closed.");
-			sendMessage(sender, "close - Syntax: !room close. Closes any rooms owned by you. Use this when you're done hosting your room.");
+		if ( Arrays.asList(links).contains(command[0]) ) {
+			sendMessage(sender, "Just message " + command[0]+ " followed by the name of the thing you're looking for. Like !monster Apex Rajang or "
+					+ "!quest A Winning Combination. If I can find it, then I'll link you the Kiranico page for it.");
+		} else if ( command[0].equalsIgnoreCase("room") || command[0].equalsIgnoreCase("!room") ) {
+			if ( size == 1 ) {
+				sendMessage(sender, "Say !room and I'll quickly tell you how many rooms are active. Options include create, close, update, join, leave, and list.");
+				sendMessage(sender, "Message !help room followed by any of those options to learn more about what they do.");
+			} else if ( command[1].equalsIgnoreCase("create") ) {
+				sendMessage(sender, "This option creates a room for you and your friends to hunt with. Just provide me with the ID, the Key for the room, and any comment"
+						+ " you want to leave.");
+				sendMessage(sender, "Just make sure it's in the form !room create 00-0000-0000-0000 9999 followed by your comment. You'll then receive an invite to a "
+						+ "subchannel dedicated to your room that people can join using !room join followed by your nick.");
+			} else if ( command[1].equalsIgnoreCase("join") ) {
+				sendMessage(sender, "This option will allow you to join a room that is already running. Just enter the nick of the Owner of the room displayed using !room list"
+						+ " and you'll get an invite to join the subchannel for their room where you can find all of the room info");
+			} else if ( command[1].equalsIgnoreCase("list") ) {
+				sendMessage(sender, "Use this option and I'll list out all of the active rooms for you including the name of the Owner so you can !room join them, and when "
+						+ "the room was last updated. There should also be a comment displayed that will give you a general idea of what they're doing as well and a player "
+						+ "count to let you know if there's free space for you to join.");
+			} else if ( command[1].equalsIgnoreCase("close") ) {
+				sendMessage(sender, "This option will close any room owned by you and remove it from the active list of rooms. Note this will happen "
+						+ "automatically if you don't update your room with !room update in over an hour.");
+			} else if ( command[1].equalsIgnoreCase("update") ) {
+				sendMessage(sender, "This option will update a room owned by you with various information. Use !room update by itself if you don't want to change "
+						+ "anything but still want to keep your room active. You can also follow it with options like id, key, comment, and owner if you want to "
+						+ "change any of that information with what follows the option.");
+			} else if ( command[1].equalsIgnoreCase("leave") ) {
+				sendMessage(sender, "Issuing !room leave from the subchannel of a room that you're currently in will cause you to leave that room and the player "
+						+ "count to be updated accordingly. Use this if you don't own a room but are done hunting with it, or after changing the owner of the "
+						+ "room to someone else in the room so people can still join it.");
+			}
+		} else if ( command[0].equalsIgnoreCase("!link") || command[0].equalsIgnoreCase("link") ) {
+			sendMessage(sender, "Using !link <target> allows you to send anything I can find with the !monster, !weapon, !armor, !quest, or !skill commands."
+					+ " Just replace <target> with the nick of the person you want to link, the follow it with either monster, weapon, armor, quest, or skill "
+					+ "and the thing you want me to search for. If I find it, I'll link it to them just like I would if they had asked me for it themselves.");
 		} else {
-			sendMessage(sender, "Available commands are. !monster, !room. Message !help followed by the command you wanna know about Doodle and I'll be happy to tell you.");
+			sendMessage(sender, "Available commands are !monster, !weapon, !armor, !quest, !skill, and !room. Message !help followed by any of these commands to learn more.");
 		}
 
 	}
